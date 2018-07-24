@@ -38,6 +38,9 @@ Plug 'coot/EnchantedVim'
 Plug 'mhinz/vim-startify'
 Plug 'skielbasa/vim-material-monokai'
 Plug 'SirVer/ultisnips'
+" Plug 'Quramy/tsuquyomi'
+Plug 'Vadskye/vim-meta'
+Plug 'Vadskye/vim-psql', {'for': 'sql'}
 call plug#end()
 
 set ignorecase
@@ -84,10 +87,24 @@ vnoremap ˚ :m '<-2<CR>gv=gv
 " Use ag for search
 let g:ackprg = 'ag --nogroup --nocolor --smart-case --column -C 2'
 " let g:ackhighlight = 1
+let g:ag_qhandler="copen 30"
 
 " Ale 
 nnoremap gd :ALEGoToDefinition<CR>
+nnoremap gr :ALEFindReferences<CR>
+nnoremap gh :ALEHover<CR>
 highlight clear ALEError
+let g:ale_linters = {
+      \   'javascript': ['eslint', 'tsserver'],
+      \   'typescript': ['tslint', 'tsserver']
+      \}
+let g:ale_fixers = {
+      \'javascript': ['prettier', 'eslint', 'remove_trailing_lines', 'trim_whitespace'],
+      \'typescript': ['prettier','tslint', 'remove_trailing_lines', 'trim_whitespace']
+      \}
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:airline#extensions#ale#enabled = 1
 
 " Color scheme
 set background=dark
@@ -132,7 +149,7 @@ let NERDTreeHijackNetrw = 1
 set number
 
 " Mapping for copying current file path
-nnoremap cp :let @+ = expand('%')<CR>
+nnoremap gp :let @+ = expand('%')<CR>
 
 " Airline powerline symbols
 let g:airline_powerline_fonts = 1
@@ -141,14 +158,15 @@ let g:airline_powerline_fonts = 1
 nnoremap # :e #<CR>
 
 " UltiSnips:
-" better key bindings for UltiSnipsExpandTrigger
-if has('unix')
-    " hack to get around inability to detect shift-enter
-    let g:UltiSnipsExpandTrigger = "<Linefeed>"
-    let g:UltiSnipsJumpForwardTrigger = "<Linefeed>"
-    let g:UltiSnipsJumpBackwardTrigger = "<C-Enter>"
-else
-    let g:UltiSnipsExpandTrigger = "<S-Enter>"
-    let g:UltiSnipsJumpForwardTrigger = "<S-Enter>"
-    let g:UltiSnipsJumpBackwardTrigger = "<C-Enter>"
-endif
+let g:UltiSnipsSnippetsDir = $DOTFILES . '/vim/UltiSnips'
+" manually specify snippet directory for speed
+let g:UltiSnipsSnippetDirectories=[$DOTFILES . '/vim/UltiSnips']
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" Sort current selection in visual mode
+vnoremap gs :'<,'>!sort<CR>
+
+set sidescroll=1
