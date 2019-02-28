@@ -41,6 +41,7 @@ Plug 'SirVer/ultisnips'
 " Plug 'Quramy/tsuquyomi'
 Plug 'Vadskye/vim-meta'
 Plug 'Vadskye/vim-psql', {'for': 'sql'}
+Plug 'elzr/vim-json'
 call plug#end()
 
 set ignorecase
@@ -54,6 +55,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 nnoremap <CR> G
 
 " Map FZF to ;
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 map ; :FZF<CR>
 
 " Set tab and autoindent to 2 spaces
@@ -105,6 +107,7 @@ let g:ale_fixers = {
 let g:ale_fix_on_save = 1
 let g:ale_completion_enabled = 1
 let g:airline#extensions#ale#enabled = 1
+let g:ale_lint_delay = 500
 
 " Color scheme
 set background=dark
@@ -166,7 +169,23 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
-" Sort current selection in visual mode
+" Sort current selection
 vnoremap gs :'<,'>!sort<CR>
+function! SortLevel() abort
+    let first_line = getline("'<")
+    let last_line = getline("'>")
+    let spaces = matchstr(first_line, '\v^( +)')
+    silent! execute "'<,'>s%\\v\\n" . spaces . " +([^ ].*)\\_$(\\n" . spaces . "([^ ]))?%\\1 \\3%g"
+    '<,'>!sort
+endfunction
+" Sort the current indentation level, creactively smashing indented objects
+" This works best on code that can be automatically parsed back out, such as
+" with Prettier.
+nmap gl Vii<Esc>:call SortLevel()<CR>
+vnoremap gl <Esc>:call SortLevel()<CR>
+
 
 set sidescroll=1
+
+" JSON formatting
+command! JsonFormat %!python -m json.tool
