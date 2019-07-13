@@ -41,7 +41,6 @@ Plug 'SirVer/ultisnips'
 " Plug 'Quramy/tsuquyomi'
 Plug 'Vadskye/vim-meta'
 Plug 'Vadskye/vim-psql', {'for': 'sql'}
-Plug 'elzr/vim-json'
 call plug#end()
 
 set ignorecase
@@ -189,3 +188,12 @@ set sidescroll=1
 
 " JSON formatting
 command! JsonFormat %!python -m json.tool
+
+" mappings for vim surround
+  let g:surround_no_mappings=1
+  " delete
+  nmap dh <Plug>Dsurround
+  " create
+  nmap ch <Plug>Ysurround
+  " replace
+  nmap rh <Plug>Csurround
