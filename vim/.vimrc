@@ -75,7 +75,27 @@ inoremap <C-j> <Esc>/[)}"'\]>]<CR>:nohl<CR>a
 let delimitMate_expand_cr = 1 
 let delimitMate_jump_expansion = 1
 
-let g:deoplete#enable_at_startup = 1
+" Deoplete:
+if get(g:, 'loaded_deoplete', 1)
+  let g:deoplete#enable_at_startup = 1
+
+  " Use S-Enter to force completion
+  " inoremap <expr><S-Enter> neocomplete#start_manual_complete()
+  " Fix <CR> completion inconsistency
+  inoremap <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<CR>"
+
+  let g:deoplete#enable_smart_case = 1
+
+  " Use ALE as completion sources for all code.
+  call deoplete#custom#option({
+      \ 'auto_complete_delay': 50,
+      \ 'smart_case': v:true,
+      \ 'sources': {
+        \ '_': ['ale'],
+      \},
+  \ })
+
+endif
 
 " [alt] + hjkl to move lines
 nnoremap ∆ :m .+1<CR>==
@@ -104,7 +124,6 @@ let g:ale_fixers = {
       \'typescript': ['prettier','tslint', 'remove_trailing_lines', 'trim_whitespace']
       \}
 let g:ale_fix_on_save = 1
-let g:ale_completion_enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_delay = 500
 
